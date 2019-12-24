@@ -15,7 +15,15 @@ const routes = [
   },
   {
     path: '/home',
-    component: () => import('components/home')
+    redirect: '/welcome',
+    component: () => import('components/home'),
+    children: [{
+      path: '/welcome',
+      component: () => import('components/welcome')
+    }, {
+      path: '/users',
+      component: () => import('views/users/list')
+    }]
   }
 ]
 
@@ -23,6 +31,7 @@ const router = new VueRouter({
   routes
 })
 
+// 路由全局守卫
 router.beforeEach((to, from, next) => {
   if (to.path === '/login') return next()
   const toSessionStorageToken = window.sessionStorage.getItem('token')

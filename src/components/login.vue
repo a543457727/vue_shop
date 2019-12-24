@@ -61,7 +61,8 @@ export default {
         console.log(infoList)
         if (infoList.meta.status !== 200) return this.$message.error(infoList.meta.msg)
         this.$message.success('登录成功')
-        window.sessionStorage.setItem('token', infoList.token)
+        console.log(infoList)
+        window.sessionStorage.setItem('token', infoList.data.token)
         this.$router.push('/home')
       })
     }
