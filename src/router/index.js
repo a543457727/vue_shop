@@ -23,6 +23,12 @@ const routes = [
     }, {
       path: '/users',
       component: () => import('views/users/list')
+    }, {
+      path: '/rights',
+      component: () => import('views/power/rights')
+    }, {
+      path: '/roles',
+      component: () => import('views/power/roles')
     }]
   }
 ]

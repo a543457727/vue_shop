@@ -17,7 +17,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="isAddShow = false">取 消</el-button>
+        <el-button @click="cancel">取 消</el-button>
         <el-button type="primary" @click="addUser('ruleForm')">确 定</el-button>
       </div>
     </el-dialog>
@@ -36,11 +36,34 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="ischange = false">取 消</el-button>
+        <el-button @click="cancel">取 消</el-button>
         <el-button type="primary" @click="changeUserMes('changMesRef')">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 修改弹出层结束 -->
+    <!-- 分配角色弹出层 -->
+    <el-dialog title="分配角色" :visible.sync="isEditPower" width="30%">
+      <div>
+        <p>当前用户:{{roleMes.username}}</p>
+        <p>当前用户角色:{{roleMes.role_name}}</p>
+        <p>
+          分配新角色:
+        <el-select v-model="thisRoleId" placeholder="请选择">
+          <el-option
+            v-for="item in roleList"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="EditPower">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 分配角色弹出层结束 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
@@ -90,7 +113,12 @@
               @click="handleDelete(scope.$index, scope.row)"
             ></el-button>
             <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" size="mini" icon="el-icon-setting"></el-button>
+              <el-button
+                type="warning"
+                size="mini"
+                icon="el-icon-setting"
+                @click="getRoleMes(scope.row)"
+              />
             </el-tooltip>
           </template>
         </el-table-column>
@@ -129,7 +157,9 @@ export default {
       return callback(new Error('请输入正确的手机号'))
     }
     return {
+      // 初始化所有用户的信息
       tableData: [],
+      // 分页信息
       page: {
         qurey: '',
         pagenum: 1,
@@ -138,14 +168,21 @@ export default {
       },
       isAddShow: false,
       ischange: false,
+      isEditPower: false,
       formLabelWidth: '80px',
+      // 添加用户的表单数据
       form: {
         username: '',
         password: '',
         email: '',
         mobile: ''
       },
+      // 选择框的选择值
+      thisRoleId: '',
+      // 当前用户的信息
+      roleMes: {},
       changMes: {},
+      roleList: {},
       rules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
@@ -266,6 +303,39 @@ export default {
           return false
         }
       })
+    },
+    async getRoleMes(role) {
+      this.roleMes = role
+      this.isEditPower = true
+      const { data: infoList } = await this.$http('roles')
+      if (infoList.meta.status !== 200) {
+        return this.message.error(infoList.meta.msg)
+      }
+      this.roleList = infoList.data
+      console.log(this.roleList)
+    },
+    cancel() {
+      // 关闭弹出层
+      this.isEditPower = false
+      this.isAddShow = false
+      this.ischange = false
+    },
+    async EditPower() {
+      if (!this.thisRoleId) {
+        return this.$message.info('角色信息没有改变')
+      }
+      const { data: infoList } = await this.$http.put(
+        `users/${this.roleMes.id}/role`,
+        {
+          rid: this.thisRoleId
+        }
+      )
+      if (infoList.meta.status !== 200) {
+        return this.$message.error(infoList.meta.msg)
+      }
+      this.$message.success(infoList.meta.msg)
+      this.cancel()
+      this.getTableList()
     }
   }
 }
