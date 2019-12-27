@@ -5,6 +5,8 @@ import './plugins/element.js'
 import 'assets/css/global.css'
 import 'assets/fonts/iconfont.css'
 import axios from 'axios'
+import tableTree from 'vue-table-with-tree-grid'
+Vue.component('table-tree', tableTree)
 
 axios.interceptors.request.use(config => {
   config.headers.Authorization = window.sessionStorage.getItem('token')
