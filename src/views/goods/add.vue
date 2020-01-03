@@ -53,7 +53,7 @@
                 v-model="ruleForm.goods_cat"
                 :options="cateList"
                 expand-trigger="hover"
-                :props="{label:'cat_name',children:'children',value: 'cat_id',}"
+                :props="{label:'cat_name',children:'children',value: 'cat_id'}"
                 @change="handleChange"
                 clearable
               ></el-cascader>
@@ -194,7 +194,6 @@ export default {
       // 点击缩略图时回调的函数
       this.previewPath = file.response.data.url
       this.isPreviewShow = true
-      console.log(this.previewPath)
     },
     handleRemove(file) {
       console.log(file)
