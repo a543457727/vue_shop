@@ -3,7 +3,6 @@ html,body,#app {
   margin: 0;
   height: 100%;
   min-width: 1366px;
-  overflow: hidden;
 }
 
 .el-breadcrumb {
