@@ -111,7 +111,6 @@ export default {
       const { data: infoList } = await this.$http.get(`orders`, {
         params: this.queryInfo
       })
-      console.log(infoList)
       if (infoList.meta.status !== 200) {
         return this.$message.error(infoList.meta.msg)
       }
